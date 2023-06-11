@@ -1,0 +1,33 @@
+FOOP is a new programming language that is designed to be easy to learn and use. It is a statically typed language, which means that the types of variables and expressions must be known at compile time. This helps to prevent errors and makes the code more readable.
+
+FOOP is also a compiled language, which means that the code is converted to machine code before it is executed. This makes the code faster than interpreted languages, such as Python.
+
+FOOP is a general-purpose language, which means that it can be used to write any type of program. It is particularly well-suited for writing web applications, games, and data science applications.
+
+Here are some of the features of FOOP:
+
+Variables can be declared using the var keyword for mutable data, the val keyword for immutable data, or without any keywords for immutable data by default.
+Expressions can be used to perform mathematical operations, logical operations, and string operations.
+Statements are used to control the flow of execution.
+Functions can be used to group related code together and make it reusable.
+Classes can be used to create reusable objects.
+Singletons are objects that can only be created once.
+Variables
+
+FOOP variables can be declared using the var keyword for mutable data, the val keyword for immutable data, or without any keywords for immutable data by default.
+
+Here are some examples of variable declarations:
+
+Code snippet
+// Mutable variable
+var name = "John Doe";
+
+// Immutable variable
+val age = 30;
+
+// Immutable variable by default
+height = 175;
+Use code with caution. Learn more
+The var keyword can be used to declare a variable that can be changed after it is declared. The val keyword can be used to declare a variable that cannot be changed after it is declared. If no keyword is used, the variable is immutable by default.
+
+I hope this documentation has been helpful. Please let me know if you have any questions.
