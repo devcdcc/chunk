@@ -30,14 +30,15 @@ import fastparse.*
 import NoWhitespace.*
 import parser.domain.*
 
-trait LiteralReader extends BasicReader:
+trait LiteralReader extends BasicReader[Literal]:
 
-  private def booleanLiteral[$: P] = P("True" | "False").!.map(_.toBoolean).map(Literal.BooleanLiteral)
-  private def intLiteral[$: P]     = P("-".? ~ digits).!.map(_.toLong).map(Literal.IntLiteral)
-  private def doubleLiteral[$: P]  = P("-".? ~ double).!.map(_.toDouble).map(Literal.DoubleLiteral)
-  private def stringLiteral[$: P]  = string.!.map(Literal.StringLiteral)
-  def literal[$: P]: P[Literal]    = P(
-    Start ~ (booleanLiteral | stringLiteral | doubleLiteral | intLiteral) ~ End
+  private def booleanLiteral[$: P] = P("True" | "False").!.map(_.toBoolean).map(Literal.BooleanLiteral.apply)
+  private def intLiteral[$: P]     = P("-".? ~ digits).!.map(_.toLong).map(Literal.IntLiteral.apply)
+  private def doubleLiteral[$: P]  = P("-".? ~ double).!.map(_.toDouble).map(Literal.DoubleLiteral.apply)
+  private def stringLiteral[$: P]  = string.!.map(Literal.StringLiteral.apply)
+
+  override def reader[$: P]: P[Literal] = P(
+    booleanLiteral | stringLiteral | doubleLiteral | intLiteral
   )
 end LiteralReader
 

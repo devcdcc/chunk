@@ -26,18 +26,16 @@
 package com.github.devcdcc.foop
 package parser.services
 
-import fastparse._, NoWhitespace._
+import fastparse._, ScalaWhitespace._
 import parser.domain.Identifier
 
-trait IdentifierReader extends BasicReader:
+trait IdentifierReader extends BasicReader[Identifier]:
 
   private inline def specialCharacterIdentifier[$: P] = P(CharIn("_$"))
   private inline def basicCharIdentifier[$: P]        = P(lowerCases | upperCases | specialCharacterIdentifier)
   private inline def basicMixedIdentifier[$: P]       = P(basicCharIdentifier | digit)
-  def identifier[$: P]: P[Identifier]                 = P(
-    Start ~ basicCharIdentifier ~ basicMixedIdentifier.rep ~ End
-  ).!.map(Identifier.apply)
-
+  def identifierText[$: P]                            = P(basicCharIdentifier ~ basicMixedIdentifier.rep).!
+  override def reader[$: P]: P[Identifier]            = identifierText.map(Identifier.apply)
 end IdentifierReader
 
 object IdentifierReader extends IdentifierReader:

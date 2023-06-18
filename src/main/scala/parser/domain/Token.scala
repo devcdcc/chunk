@@ -28,6 +28,8 @@ package parser.domain
 
 import zio.prelude.data.*
 
+val LANG_DEFAULT_PACKAGE = "foop"
+
 sealed trait FoopToken
 
 sealed trait Literal extends FoopToken
@@ -39,54 +41,64 @@ object Literal:
 
 case class Identifier(value: String) extends FoopToken
 
-type Assignable = Literal | Identifier
-
-sealed trait AbstractValueDeclaration(
-  name: Identifier,
-  typeDef: TypeDef,
-  defaultValue: Optional[Assignable] = Optional.Absent
-) extends FoopToken
-
-case class ValueDeclaration(name: Identifier, typeDef: TypeDef, defaultValue: Optional[Assignable] = Optional.Absent)
-    extends AbstractValueDeclaration(name = name, typeDef = typeDef, defaultValue = defaultValue)
-
-sealed trait LocationDef extends TypeDef
-sealed trait GenericDef  extends TypeDef
-
-sealed trait AttributeDef extends FoopToken
-
-sealed trait MemberDef extends FoopToken
-object MemberDef:
-  type Statement = ValueDeclaration | Identifier | MemberDef
-  case class ValueMemberDef(name: Identifier, typeDef: TypeDef, defaultValue: Optional[Assignable] = Optional.Absent)
-      extends AbstractValueDeclaration(name = name, typeDef = typeDef, defaultValue = defaultValue)
-      with MemberDef
-  case class MethodMemberDef(
-    name: Identifier,
-    returnType: TypeDef,
-    generics: Seq[GenericDef],
-    attributes: List[ValueDeclaration],
-    statements: List[Statement]
-  ) extends MemberDef
-end MemberDef
-
-sealed trait TypeDef extends FoopToken
-object TypeDef:
-
-  case object Unit   extends TypeDef
-  case object Bool   extends TypeDef
-  case object Byte   extends TypeDef
-  case object Int    extends TypeDef
-  case object Long   extends TypeDef
-  case object Float  extends TypeDef
-  case object Double extends TypeDef
-  case object String extends TypeDef
-
-  case class ClassTypeDef(
-    name: Identifier,
-    location: LocationDef,
-    generics: Seq[GenericDef],
-    attributes: List[AttributeDef],
-    members: Array[MemberDef]
-  ) extends TypeDef
+sealed trait TypeDef extends FoopToken:
+  def name: String
 end TypeDef
+
+case class SimpleTypeDef(name: String)                     extends TypeDef
+case class HKTTypeDef(name: String, members: Seq[TypeDef]) extends TypeDef
+
+//type Assignable = Literal | Identifier
+//
+//sealed trait AbstractValueDeclaration(
+//  name: Identifier,
+//  typeDef: TypeDef,
+//  defaultValue: Optional[Assignable] = Optional.Absent
+//) extends FoopToken
+//
+//case class ValueDeclaration(name: Identifier, typeDef: TypeDef, defaultValue: Optional[Assignable] = Optional.Absent)
+//    extends AbstractValueDeclaration(name = name, typeDef = typeDef, defaultValue = defaultValue)
+//
+//sealed trait LocationDef extends TypeDef
+//case object LocationDef  extends LocationDef
+//sealed trait GenericDef  extends TypeDef
+//
+//sealed trait AttributeDef extends FoopToken
+//
+//sealed trait MemberDef extends FoopToken
+//object MemberDef:
+//  type Statement = ValueDeclaration | Identifier | MemberDef
+//  case class ValueMemberDef(name: Identifier, typeDef: TypeDef, defaultValue: Optional[Assignable] = Optional.Absent)
+//      extends AbstractValueDeclaration(name = name, typeDef = typeDef, defaultValue = defaultValue)
+//      with MemberDef
+//  case class MethodMemberDef(
+//    name: Identifier,
+//    returnType: TypeDef,
+//    generics: Seq[GenericDef],
+//    attributes: List[ValueDeclaration],
+//    statements: List[Statement]
+//  ) extends MemberDef
+//end MemberDef
+//
+//sealed trait TypeDef extends FoopToken:
+//end TypeDef
+//
+//object TypeDef:
+//
+//  case object Unit   extends TypeDef
+//  case object Bool   extends TypeDef
+//  case object Byte   extends TypeDef
+//  case object Int    extends TypeDef
+//  case object Long   extends TypeDef
+//  case object Float  extends TypeDef
+//  case object Double extends TypeDef
+//  case object String extends TypeDef
+//
+//  case class ClassTypeDef(
+//    name: Identifier,
+//    location: LocationDef,
+//    generics: Seq[GenericDef],
+//    attributes: List[AttributeDef],
+//    members: Array[MemberDef]
+//  ) extends TypeDef
+//end TypeDef

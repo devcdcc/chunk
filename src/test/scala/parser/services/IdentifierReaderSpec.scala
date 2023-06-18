@@ -28,7 +28,7 @@ object IdentifierReaderSpec extends ZIOSpecDefault {
       for {
         // when
         responses <- ZIO.foreach(identifiers) { identifier =>
-          zioFromParsed(parse(identifier, subject.identifier)).either
+          zioFromParsed(parse(identifier, subject.test)).either
         }
         // then
       } yield assertTrue(responses.forall(_.isRight))
@@ -45,7 +45,7 @@ object IdentifierReaderSpec extends ZIOSpecDefault {
       for {
         // when
         responses <- ZIO.foreach(identifiers) { identifier =>
-          zioFromParsed(parse(identifier, subject.identifier)).either
+          zioFromParsed(parse(identifier, subject.test)).either
         }
         // then
       } yield assertTrue(responses.forall(_.isLeft))

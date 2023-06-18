@@ -30,7 +30,7 @@ import fastparse._, NoWhitespace._
 
 trait TokenReaderService:
 end TokenReaderService
-
-private case class TokenReaderServiceLive() extends IdentifierReader with LiteralReader:
-
-end TokenReaderServiceLive
+//
+//private case class TokenReaderServiceLive() extends IdentifierReader with LiteralReader:
+//
+//end TokenReaderServiceLive

@@ -28,7 +28,7 @@ package parser.services
 
 import fastparse._, NoWhitespace._
 
-trait BasicReader:
+trait BasicReader[ReturnType]:
   protected def stringChars(c: Char)       = c != '\"' && c != '\\'
   protected inline def separator[$: P]     = P(CharsWhileIn(" \r\n", 0))
   protected inline def separators[$: P]    = P(separator.rep)
@@ -41,5 +41,10 @@ trait BasicReader:
   protected inline def strChars[$: P]      = P(CharsWhile(stringChars))
   protected inline def string[$: P]        = P(separator ~ "\"" ~/ (strChars | escape).rep.! ~ "\"")
   protected inline def lowerCases[$: P]    = P(CharIn("a-z"))
-  protected inline def upperCases[$: P]    = P(CharIn("a-z"))
+  protected inline def upperCases[$: P]    = P(CharIn("A-Z"))
+
+  protected def reader[$: P]: P[ReturnType]
+  private[services] final def test[$: P]: P[ReturnType] =
+    Start ~ reader ~ End
+
 end BasicReader
