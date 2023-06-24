@@ -1,9 +1,10 @@
 package com.github.devcdcc.foop
 package parser.services
 
-import fastparse._, NoWhitespace._
-
-import zio._
+import fastparse.*
+import NoWhitespace.*
+import com.github.devcdcc.foop.parser.domain.Identifier
+import zio.*
 import zio.test.*
 import zio.test.Assertion.*
 
@@ -13,18 +14,32 @@ object IdentifierReaderSpec extends ZIOSpecDefault {
   override def spec = suite("IdentifierReader.identifier")(
     test("should succeed with valid identifiers") {
       // given
-      val identifierLines = """a
-                              |bv
-                              |abc
-                              |$abc
-                              |_abc
-                              |_01
-                              |_00
-                              |_abc01
-                              |__
-                              |aaa_01
-                              |asda01_""".stripMargin
-      val identifiers     = identifierLines.split("\n")
+      val identifiers =
+        List(
+          "a",
+          "bc",
+          "abc",
+          "$abc",
+          "_01",
+          "_00",
+          "_abc01",
+          "__",
+          "aaa_01",
+          "asda01_"
+        )
+      val expected    =
+        List(
+          Identifier("a"),
+          Identifier("bc"),
+          Identifier("abc"),
+          Identifier("$abc"),
+          Identifier("_01"),
+          Identifier("_00"),
+          Identifier("_abc01"),
+          Identifier("__"),
+          Identifier("aaa_01"),
+          Identifier("asda01_")
+        )
       for {
         // when
         responses <- ZIO.foreach(identifiers) { identifier =>
@@ -35,13 +50,15 @@ object IdentifierReaderSpec extends ZIOSpecDefault {
     },
     test("should fail on invalid identifiers") {
       // given
-      val identifierLines = """0
-                              |000asdfa
-                              |%%
-                              |23
-                              |@@
-                              |!43#""".stripMargin
-      val identifiers     = identifierLines.split("\n")
+      val identifiers =
+        List(
+          "0",
+          "000asdfa",
+          "%%",
+          "23",
+          "@@",
+          "!43#"
+        )
       for {
         // when
         responses <- ZIO.foreach(identifiers) { identifier =>
@@ -49,6 +66,6 @@ object IdentifierReaderSpec extends ZIOSpecDefault {
         }
         // then
       } yield assertTrue(responses.forall(_.isLeft))
-    },
+    }
   )
 }

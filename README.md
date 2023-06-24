@@ -4,7 +4,7 @@ This is the introduction document to the `foop` programming language, it will co
 
 # Case of study
 
-Rust have been growing in popularize since its release from mozilla and have been most loved language in stakoverflow for 7 years in a row, it is because a high and low level language at the same time, and also because it implements an ownership memory model.
+Rust have been growing in popularize since its release from mozilla and have been most loved language in StackOverflow for 7 years in a row, it is because a high and low level language at the same time, and also because it implements an ownership memory model.
 
 A LinkedIn [post](https://www.linkedin.com/posts/signify-technology_devs-rustlang-activity-7052200216506032128-WMbw)
 asks their audience about considering using rust as their main programming language, half of people said yes or maybe,
@@ -140,7 +140,7 @@ trait Monad ?U: // generic type U
 		u(???) // ??? equals to unimplemented
 
 trait Monad[U]: // generic type U
-  map(U => ?V): Monand[V] // generic type V
+    map(U => ?V): Monand[V] // generic type V  equals to == map[V](U => V): Monand[V] 
     flatMap(U => Monad[?V]): Monand[V]
     flatMap(u: U => Monad[?V]): Monand[V] =
     u(???) // ??? equals to unimplemented

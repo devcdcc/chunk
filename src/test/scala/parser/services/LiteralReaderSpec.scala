@@ -1,6 +1,7 @@
 package com.github.devcdcc.foop
 package parser.services
 
+import parser.domain._
 import fastparse._, NoWhitespace._
 import zio.*
 import zio.test.*
@@ -15,11 +16,23 @@ object LiteralReaderSpec extends ZIOSpecDefault {
     test("succeed with valid literals") {
       // given
       val identifier = ValidLiterals
+      val expected   = List(
+        Literal.IntLiteral(2332),
+        Literal.IntLiteral(12),
+        Literal.BooleanLiteral(true),
+        Literal.BooleanLiteral(false),
+        Literal.DoubleLiteral(12.12341234),
+        Literal.StringLiteral("asfdasd"),
+        Literal.IntLiteral(-1),
+        Literal.DoubleLiteral(-1.2123423)
+      )
       for {
         // when
-        response <- ZIO.foreach(identifier)(literal => zioFromParsed(parse(literal, LiteralReader.test)).either)
+        response <- ZIO
+          .foreach(identifier)(literal => zioFromParsed(parse(literal, LiteralReader.test)))
+          .map(_.map(_.value))
         // then
-      } yield assertTrue(response.forall(_.isRight))
+      } yield assertTrue(response == expected)
     },
     test("fail with invalid literals") {
       // given
