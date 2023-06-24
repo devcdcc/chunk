@@ -32,21 +32,21 @@ val LANG_DEFAULT_PACKAGE = "foop"
 
 sealed trait FoopToken
 
-sealed trait Literal extends FoopToken
+sealed trait Literal                 extends FoopToken
 object Literal:
   case class IntLiteral(value: Long)        extends Literal
   case class DoubleLiteral(value: Double)   extends Literal
   case class StringLiteral(value: String)   extends Literal
   case class BooleanLiteral(value: Boolean) extends Literal
-
 case class Identifier(value: String) extends FoopToken
 
-sealed trait TypeDef extends FoopToken:
-  def name: String
-end TypeDef
+sealed trait TypeDef extends FoopToken
 
-case class SimpleTypeDef(name: String)                     extends TypeDef
-case class HKTTypeDef(name: String, members: Seq[TypeDef]) extends TypeDef
+object TypeDef:
+  case object InferredHole                                   extends TypeDef
+  case class SimpleTypeDef(name: String)                     extends TypeDef
+  case class HKTTypeDef(name: String, members: Seq[TypeDef]) extends TypeDef
+end TypeDef
 
 //type Assignable = Literal | Identifier
 //

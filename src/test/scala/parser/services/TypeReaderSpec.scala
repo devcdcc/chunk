@@ -25,17 +25,20 @@ object TypeReaderSpec extends ZIOSpecDefault {
         "H[K[T,U]]"
       )
       val expected = List(
-        SimpleTypeDef("aTypeName"),
-        SimpleTypeDef("a.full.package.name"),
-        SimpleTypeDef("ANUPPPERCASENAME"),
-        SimpleTypeDef("ACamelCaseName"),
-        SimpleTypeDef("lowercaseName"),
-        HKTTypeDef("H", List(SimpleTypeDef("_"))),
-        HKTTypeDef("H", List(SimpleTypeDef("T"))),
-        HKTTypeDef("com.package.name.H", List(SimpleTypeDef("T"))),
-        HKTTypeDef("com.package.name.H", List(SimpleTypeDef("com.package.name.T"))),
-        HKTTypeDef("H", List(SimpleTypeDef("K"), SimpleTypeDef("T"))),
-        HKTTypeDef("H", List(HKTTypeDef("K", List(SimpleTypeDef("T"), SimpleTypeDef("U")))))
+        TypeDef.SimpleTypeDef("aTypeName"),
+        TypeDef.SimpleTypeDef("a.full.package.name"),
+        TypeDef.SimpleTypeDef("ANUPPPERCASENAME"),
+        TypeDef.SimpleTypeDef("ACamelCaseName"),
+        TypeDef.SimpleTypeDef("lowercaseName"),
+        TypeDef.HKTTypeDef("H", List(TypeDef.InferredHole)),
+        TypeDef.HKTTypeDef("H", List(TypeDef.SimpleTypeDef("T"))),
+        TypeDef.HKTTypeDef("com.package.name.H", List(TypeDef.SimpleTypeDef("T"))),
+        TypeDef.HKTTypeDef("com.package.name.H", List(TypeDef.SimpleTypeDef("com.package.name.T"))),
+        TypeDef.HKTTypeDef("H", List(TypeDef.SimpleTypeDef("K"), TypeDef.SimpleTypeDef("T"))),
+        TypeDef.HKTTypeDef(
+          "H",
+          List(TypeDef.HKTTypeDef("K", List(TypeDef.SimpleTypeDef("T"), TypeDef.SimpleTypeDef("U"))))
+        )
       )
       for {
         // when
