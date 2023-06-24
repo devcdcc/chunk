@@ -17,7 +17,10 @@ object TypeReaderSpec extends ZIOSpecDefault {
         "ANUPPPERCASENAME",
         "ACamelCaseName",
         "lowercaseName",
+        "H[_]",
         "H[T]",
+        "com.package.name.H[T]",
+        "com.package.name.H[com.package.name.T]",
         "H[K,T]",
         "H[K[T,U]]"
       )
@@ -27,7 +30,10 @@ object TypeReaderSpec extends ZIOSpecDefault {
         SimpleTypeDef("ANUPPPERCASENAME"),
         SimpleTypeDef("ACamelCaseName"),
         SimpleTypeDef("lowercaseName"),
+        HKTTypeDef("H", List(SimpleTypeDef("_"))),
         HKTTypeDef("H", List(SimpleTypeDef("T"))),
+        HKTTypeDef("com.package.name.H", List(SimpleTypeDef("T"))),
+        HKTTypeDef("com.package.name.H", List(SimpleTypeDef("com.package.name.T"))),
         HKTTypeDef("H", List(SimpleTypeDef("K"), SimpleTypeDef("T"))),
         HKTTypeDef("H", List(HKTTypeDef("K", List(SimpleTypeDef("T"), SimpleTypeDef("U")))))
       )
@@ -53,6 +59,7 @@ object TypeReaderSpec extends ZIOSpecDefault {
         "H[]",
         "HT]",
         "H[K,]",
+        "0H[K]",
         "H[K[T,U]",
         "H[K[T,U,]]",
         "H[K[,T,U]]"
