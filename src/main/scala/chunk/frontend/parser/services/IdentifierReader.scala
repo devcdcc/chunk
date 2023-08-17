@@ -23,11 +23,13 @@
  *
  */
 
-package com.github.devcdcc.foop
-package parser.services
+package chunk
+package frontend.parser.services
 
-import fastparse._, ScalaWhitespace._
-import parser.domain.Identifier
+import fastparse.*
+import ScalaWhitespace.*
+
+import frontend.parser.domain.Identifier
 
 trait IdentifierReader extends BasicReader[Identifier]:
 

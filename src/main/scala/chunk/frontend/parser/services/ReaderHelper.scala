@@ -1,9 +1,10 @@
-package com.github.devcdcc.foop
-package parser.services
+package chunk
+package frontend.parser.services
 
 import fastparse.*
 import NoWhitespace.*
-import parser.domain.*
+import frontend.parser.domain.*
+
 import zio.*
 //
 //type Succeed[+T] = Parsed.Success[T]
@@ -27,7 +28,7 @@ case class UnexpectedParserError(throwable: Throwable) extends Failed
 case class ParserError(parsed: Parsed.Failure)         extends Failed
 
 //type Failed      = Parsed.Failure | Throwable
-def zioFromParsed[T >: FoopToken](p: => Parsed[T]): IO[Failed, Succeed[T]] =
+def zioFromParsed[T >: LangToken](p: => Parsed[T]): IO[Failed, Succeed[T]] =
   ZIO
     .attemptUnsafe(_ => p)
     .mapError(error => UnexpectedParserError(error))

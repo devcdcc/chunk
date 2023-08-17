@@ -1,8 +1,11 @@
-package com.github.devcdcc.foop
-package parser.services
+package chunk
+package frontend.parser.services
 
-import parser.domain._
-import fastparse._, NoWhitespace._
+import frontend.parser.domain.*
+
+import fastparse.*
+import NoWhitespace.*
+
 import zio.*
 import zio.test.*
 

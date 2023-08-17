@@ -1,9 +1,9 @@
-package com.github.devcdcc.foop
-package parser.services
+package chunk
+package frontend.parser.services
 
 import fastparse.*
 import NoWhitespace.*
-import com.github.devcdcc.foop.parser.domain.Identifier
+import frontend.parser.domain.*
 import zio.*
 import zio.test.*
 import zio.test.Assertion.*
@@ -25,7 +25,8 @@ object IdentifierReaderSpec extends ZIOSpecDefault {
           "_abc01",
           "__",
           "aaa_01",
-          "asda01_"
+          "asda01_",
+          "personName"
         )
       val expected    =
         List(
@@ -38,7 +39,7 @@ object IdentifierReaderSpec extends ZIOSpecDefault {
           Identifier("_abc01"),
           Identifier("__"),
           Identifier("aaa_01"),
-          Identifier("asda01_")
+          Identifier("personName")
         )
       for {
         // when

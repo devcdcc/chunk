@@ -23,30 +23,52 @@
  *
  */
 
-package com.github.devcdcc.foop
-package parser.domain
+package chunk
+package frontend.parser.domain
 
 import zio.prelude.data.*
 
 val LANG_DEFAULT_PACKAGE = "foop"
 
-sealed trait FoopToken
+sealed trait LangToken
 
-sealed trait Literal                 extends FoopToken
+sealed trait Literal                 extends LangToken
 object Literal:
   case class IntLiteral(value: Long)        extends Literal
   case class DoubleLiteral(value: Double)   extends Literal
   case class StringLiteral(value: String)   extends Literal
   case class BooleanLiteral(value: Boolean) extends Literal
-case class Identifier(value: String) extends FoopToken
+case class Identifier(value: String) extends LangToken
 
-sealed trait TypeDef extends FoopToken
-
+sealed trait TypeDef extends LangToken
 object TypeDef:
   case object InferredHole                                   extends TypeDef
   case class SimpleTypeDef(name: String)                     extends TypeDef
   case class HKTTypeDef(name: String, members: Seq[TypeDef]) extends TypeDef
 end TypeDef
+
+trait Invocation extends LangToken
+object Invocation:
+  case class ParamLessInvocation(name: String, genericMembers: List[TypeDef])                        extends Invocation
+  case class ParamsInvocation(name: String, genericMembers: List[TypeDef], params: List[Assignable]) extends Invocation
+end Invocation
+
+type Assignable = Invocation | Literal
+
+trait Member extends LangToken
+object Member:
+  case class ValueDeclaration(name: String, typeDef: TypeDef, defaultValue: Optional[Assignable]) extends Member
+  case class VarDeclaration(name: String, typeDef: TypeDef, defaultValue: Optional[Assignable])   extends Member
+  case class MethodDeclaration(
+    name: String,
+    genericParams: List[TypeDef],
+    params: List[Member],
+    returnType: TypeDef,
+    statements: List[Statements]
+  ) extends Member
+end Member
+
+type Statements = Member | Invocation
 
 //type Assignable = Literal | Identifier
 //

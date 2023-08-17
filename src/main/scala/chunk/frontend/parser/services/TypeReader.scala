@@ -1,9 +1,9 @@
-package com.github.devcdcc.foop
-package parser.services
+package chunk
+package frontend.parser.services
 
 import fastparse.*
 import NoWhitespace.*
-import parser.domain.*
+import frontend.parser.domain.*
 
 trait TypeReader extends BasicReader[TypeDef]:
   private def basicType[$: P]: P[TypeDef.SimpleTypeDef] = IdentifierReader.identifierText

@@ -1,10 +1,11 @@
-package com.github.devcdcc.foop
-package parser.services
+package chunk
+package frontend.parser.services
+
 import zio.*
 import zio.test.*
 import fastparse.*
 import NoWhitespace.*
-import parser.domain.*
+import frontend.parser.domain.*
 
 object TypeReaderSpec extends ZIOSpecDefault {
 
@@ -69,7 +70,7 @@ object TypeReaderSpec extends ZIOSpecDefault {
       )
       for {
         // when
-        result: List[Either[Failed, Succeed[FoopToken]]] <- ZIO.foreach(typeDefs) { typeDef =>
+        result: List[Either[Failed, Succeed[LangToken]]] <- ZIO.foreach(typeDefs) { typeDef =>
           zioFromParsed(parse(typeDef, TypeReader.test)).either
         }
         // then

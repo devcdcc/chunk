@@ -1,11 +1,10 @@
-package com.github.devcdcc.foop;
+package chunk
 
-import com.github.devcdcc.foop.parser.services.TokensReader
 import zio.stream.*
 import zio.*
 import fastparse.*
 import NoWhitespace.*
-import parser.domain
+import frontend.parser.domain
 
 object Main extends ZIOAppDefault {
   override def run =

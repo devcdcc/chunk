@@ -23,30 +23,25 @@
  *
  */
 
-package com.github.devcdcc.foop
-package parser.services
+package chunk
+package frontend.parser.services
 
 import fastparse.*
-import CharPredicates.*
 import NoWhitespace.*
+import frontend.parser.domain.*
 
-trait BasicReader[ReturnType]:
-  private def stringChars(c: Char)       = c != '\"' && c != '\\'
-  private inline def separator[$: P]     = P(CharsWhileIn(" \r\n", 0))
-  private inline def separators[$: P]    = P(separator.rep)
-  protected inline def digit[$: P]       = P(CharIn("0-9"))
-  protected inline def digits[$: P]      = P(digit.rep)
-  protected inline def double[$: P]      = P(digit.rep ~ "." ~ digit.rep)
-  private inline def hexDigit[$: P]      = P(CharIn("0-9a-fA-F"))
-  private inline def unicodeEscape[$: P] = P("u" ~ hexDigit ~ hexDigit ~ hexDigit ~ hexDigit)
-  private inline def escape[$: P]        = P("\\" ~ (CharIn("\"/\\\\bfnrt") | unicodeEscape))
-  private inline def strChars[$: P]      = P(CharsWhile(stringChars))
-  protected inline def string[$: P]      = P(separator ~ "\"" ~/ (strChars | escape).rep.! ~ "\"")
-  protected inline def lowerCases[$: P]  = P(CharIn("a-z"))
-  protected inline def upperCases[$: P]  = P(CharIn("A-Z"))
+trait LiteralReader extends BasicReader[Literal]:
 
-  protected def reader[$: P]: P[ReturnType]
-  private[services] final def test[$: P]: P[ReturnType] =
-    Start ~ reader ~ End
+  private def booleanLiteral[$: P] = P("True" | "False").!.map(_.toBoolean).map(Literal.BooleanLiteral.apply)
+  private def intLiteral[$: P]     = P("-".? ~ digits).!.map(_.toLong).map(Literal.IntLiteral.apply)
+  private def doubleLiteral[$: P]  = P("-".? ~ double).!.map(_.toDouble).map(Literal.DoubleLiteral.apply)
+  private def stringLiteral[$: P]  = string.map(Literal.StringLiteral.apply)
 
-end BasicReader
+  override def reader[$: P]: P[Literal] = P(
+    booleanLiteral | stringLiteral | doubleLiteral | intLiteral
+  )
+end LiteralReader
+
+object LiteralReader extends LiteralReader:
+
+end LiteralReader
