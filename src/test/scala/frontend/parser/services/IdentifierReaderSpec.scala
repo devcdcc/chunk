@@ -11,7 +11,7 @@ import zio.test.Assertion.*
 object IdentifierReaderSpec extends ZIOSpecDefault {
   private val subject = new IdentifierReader {}
 
-  override def spec = suite("IdentifierReader.identifier")(
+  override def spec: Spec[Any, Nothing] = suite("IdentifierReader.identifier")(
     test("should succeed with valid identifiers") {
       // given
       val identifiers =

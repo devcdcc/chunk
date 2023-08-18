@@ -9,7 +9,7 @@ import frontend.parser.domain.*
 
 object TypeReaderSpec extends ZIOSpecDefault {
 
-  override def spec = suite("TypeReader.typeReader")(
+  override def spec: Spec[TestEnvironment with Scope, Any] = suite("TypeReader.typeReader")(
     test("should succeed with valid typeDef") {
       // given
       val typeDefs = List(
