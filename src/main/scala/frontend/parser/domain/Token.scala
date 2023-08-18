@@ -51,11 +51,8 @@ object TypeDef:
   case class HKTTypeDef(name: String, members: Seq[TypeDef]) extends TypeDef
 end TypeDef
 
-// used for variables usage
-// InvocationName used for identifier usage, could be calling a single identifier or a set of sub elements of identifiers
-trait InvocationName
-case class SimpleInvocationName(name: Identifier)
-case class ComposedInvocationName(name: List[Identifier])
+// InvocationName used for identifier/variables usage
+case class InvocationName(name: List[Identifier]) extends LangToken
 
 // invocation used for variables usage
 trait Invocation extends LangToken

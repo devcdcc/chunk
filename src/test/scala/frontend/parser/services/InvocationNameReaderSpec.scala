@@ -8,8 +8,9 @@ import zio.*
 import zio.test.*
 import zio.test.Assertion.*
 
-object IdentifierReaderSpec extends ZIOSpecDefault {
-  private val subject = new IdentifierReader {}
+object InvocationNameReaderSpec extends ZIOSpecDefault {
+
+  private val subject = new InvocationNameReader {}
 
   override def spec = suite("IdentifierReader.identifier")(
     test("should succeed with valid identifiers") {
@@ -17,30 +18,28 @@ object IdentifierReaderSpec extends ZIOSpecDefault {
       val identifiers =
         List(
           "a",
-          "bc",
-          "abc",
+          "b.c",
+          "a.b.c",
           "$abc",
           "_01",
           "_00",
           "_abc01",
           "__",
           "aaa_01",
-          "asda01_",
           "personName"
         )
-      val expected    =
+      val expected =
         List(
-          Identifier("a"),
-          Identifier("bc"),
-          Identifier("abc"),
-          Identifier("$abc"),
-          Identifier("_01"),
-          Identifier("_00"),
-          Identifier("_abc01"),
-          Identifier("__"),
-          Identifier("aaa_01"),
-          Identifier("asda01_"),
-          Identifier("personName")
+          InvocationName(List(Identifier("a"))),
+          InvocationName(List(Identifier("b"), Identifier("c"))),
+          InvocationName(List(Identifier("a"), Identifier("b"), Identifier("c"))),
+          InvocationName(List(Identifier("$abc"))),
+          InvocationName(List(Identifier("_01"))),
+          InvocationName(List(Identifier("_00"))),
+          InvocationName(List(Identifier("_abc01"))),
+          InvocationName(List(Identifier("__"))),
+          InvocationName(List(Identifier("aaa_01"))),
+          InvocationName(List(Identifier("personName")))
         )
       for {
         // when
@@ -59,7 +58,9 @@ object IdentifierReaderSpec extends ZIOSpecDefault {
           "%%",
           "23",
           "@@",
-          "!43#"
+          "!43#",
+          "a.b..c",
+          "_a.bc.01"
         )
       for {
         // when
