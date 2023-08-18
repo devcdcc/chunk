@@ -24,6 +24,7 @@
  */
 
 package chunk
+
 package frontend.parser.domain
 
 import zio.prelude.data.*
@@ -32,14 +33,17 @@ val LANG_DEFAULT_PACKAGE = "foop"
 
 sealed trait LangToken
 
+// Literal, used for identifier literal
 sealed trait Literal                 extends LangToken
 object Literal:
   case class IntLiteral(value: Long)        extends Literal
   case class DoubleLiteral(value: Double)   extends Literal
   case class StringLiteral(value: String)   extends Literal
   case class BooleanLiteral(value: Boolean) extends Literal
+// identifier used for identifier declaration
 case class Identifier(value: String) extends LangToken
 
+// Type def used for type descriptions
 sealed trait TypeDef extends LangToken
 object TypeDef:
   case object InferredHole                                   extends TypeDef
@@ -47,28 +51,41 @@ object TypeDef:
   case class HKTTypeDef(name: String, members: Seq[TypeDef]) extends TypeDef
 end TypeDef
 
+// used for variables usage
+// InvocationName used for identifier usage, could be calling a single identifier or a set of sub elements of identifiers
+trait InvocationName
+case class SimpleInvocationName(name: Identifier)
+case class ComposedInvocationName(name: List[Identifier])
+
+// invocation used for variables usage
 trait Invocation extends LangToken
 object Invocation:
-  case class ParamLessInvocation(name: String, genericMembers: List[TypeDef])                        extends Invocation
-  case class ParamsInvocation(name: String, genericMembers: List[TypeDef], params: List[Assignable]) extends Invocation
+  case class InvocationValue(name: InvocationName) extends Invocation
+  case class ParamLessInvocation(name: InvocationName, genericMembers: List[TypeDef])                        extends Invocation
+  case class ParamsInvocation(name: InvocationName, genericMembers: List[TypeDef], params: List[ValueToken]) extends Invocation
 end Invocation
 
-type Assignable = Invocation | Literal
+// used for literals or variables usage
+type ValueToken = Invocation | Literal
 
+// used for defining variables or class members
 trait Member extends LangToken
 object Member:
-  case class ValueDeclaration(name: String, typeDef: TypeDef, defaultValue: Optional[Assignable]) extends Member
-  case class VarDeclaration(name: String, typeDef: TypeDef, defaultValue: Optional[Assignable])   extends Member
+  case class ValueDeclaration(name: Identifier, typeDef: TypeDef, defaultValue: Optional[ValueToken]) extends Member
+  case class VarDeclaration(name: Identifier, typeDef: TypeDef, defaultValue: Optional[ValueToken])   extends Member
   case class MethodDeclaration(
-    name: String,
-    genericParams: List[TypeDef],
-    params: List[Member],
-    returnType: TypeDef,
-    statements: List[Statements]
-  ) extends Member
+                                name: Identifier,
+                                genericParams: List[TypeDef],
+                                params: List[Member],
+                                returnType: TypeDef,
+                                statements: List[Statements]
+                              ) extends Member
 end Member
 
+// used for any sentence variable declaration or value/variable usage.
 type Statements = Member | Invocation
+
+
 
 //type Assignable = Literal | Identifier
 //
