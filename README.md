@@ -1,6 +1,6 @@
 # Introduction
 
-This is the introduction document to the `foop` programming language, it will collect the main ideas, cases of study and thinking process.
+This is the introduction document to the `Chunk` programming language, it will collect the main ideas, cases of study and thinking process.
 
 # Case of study
 
