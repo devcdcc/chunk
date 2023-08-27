@@ -38,7 +38,6 @@ def zioFromParsed[T >: LangToken](p: => Parsed[T]): IO[Failed, Succeed[T]] =
       case failure: Parsed.Failure      =>
         ZIO.fail(ParserError(failure))
     }
-
 //extension [T](p: => P[T])
 //  def fullEval(implicit ctx: P[_]): P[T] = Start ~ p ~ End
 //  def d[$: P]: P[T]                      = Start ~ p ~ End

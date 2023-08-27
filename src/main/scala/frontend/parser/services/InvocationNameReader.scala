@@ -8,7 +8,7 @@ import ScalaWhitespace.*
 import frontend.parser.domain.*
 
 trait InvocationNameReader extends BasicReader[InvocationName]:
-  override def reader[$: P]: P[InvocationName] = P(IdentifierReader.reader.rep(sep = ".").map(identifiers =>
+  override def reader[$: P]: P[InvocationName] = P(IdentifierReader.reader.rep(min=1, sep = ".").map(identifiers =>
     InvocationName(identifiers.toList)
   ))
 end InvocationNameReader

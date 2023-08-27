@@ -33,11 +33,13 @@ import frontend.parser.domain.Identifier
 
 trait IdentifierReader extends BasicReader[Identifier]:
 
+  import BasicReader.*
+
   private inline def specialCharacterIdentifier[$: P] = P(CharIn("_$"))
   private inline def basicCharIdentifier[$: P]        = P(lowerCases | upperCases | specialCharacterIdentifier)
   private inline def basicMixedIdentifier[$: P]       = P(basicCharIdentifier | digit)
-  def identifierText[$: P]                            = P(basicCharIdentifier ~ basicMixedIdentifier.rep).!
-  override def reader[$: P]: P[Identifier]            = identifierText.map(Identifier.apply)
+  private def identifierText[$: P]                            = P(basicCharIdentifier ~ basicMixedIdentifier.rep).!
+  override def reader[$: P]: P[Identifier]            = identifierText.filter(a => a != "True" && a  != "False").map(Identifier.apply)
 end IdentifierReader
 
 object IdentifierReader extends IdentifierReader:

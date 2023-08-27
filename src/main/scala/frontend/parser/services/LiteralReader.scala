@@ -27,10 +27,12 @@ package chunk
 package frontend.parser.services
 
 import fastparse.*
-import NoWhitespace.*
+import ScalaWhitespace.*
 import frontend.parser.domain.*
 
 trait LiteralReader extends BasicReader[Literal]:
+
+  import BasicReader.*
 
   private def booleanLiteral[$: P] = P("True" | "False").!.map(_.toBoolean).map(Literal.BooleanLiteral.apply)
   private def intLiteral[$: P]     = P("-".? ~ digits).!.map(_.toLong).map(Literal.IntLiteral.apply)
@@ -38,7 +40,7 @@ trait LiteralReader extends BasicReader[Literal]:
   private def stringLiteral[$: P]  = string.map(Literal.StringLiteral.apply)
 
   override def reader[$: P]: P[Literal] = P(
-    booleanLiteral | stringLiteral | doubleLiteral | intLiteral
+    stringLiteral | doubleLiteral | intLiteral | booleanLiteral
   )
 end LiteralReader
 

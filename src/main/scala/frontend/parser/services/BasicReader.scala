@@ -28,25 +28,28 @@ package frontend.parser.services
 
 import fastparse.*
 import CharPredicates.*
-import NoWhitespace.*
+import ScalaWhitespace.*
 
 trait BasicReader[ReturnType]:
+  def reader[$: P]: P[ReturnType]
+  private[services] final def test[$: P]: P[ReturnType] =
+    Start ~ reader ~ End
+
+end BasicReader
+
+object BasicReader:
+
   private def stringChars(c: Char)       = c != '\"' && c != '\\'
   private inline def separator[$: P]     = P(CharsWhileIn(" \r\n", 0))
-  private inline def separators[$: P]    = P(separator.rep)
-  protected inline def digit[$: P]       = P(CharIn("0-9"))
-  protected inline def digits[$: P]      = P(digit.rep)
-  protected inline def double[$: P]      = P(digit.rep ~ "." ~ digit.rep)
+  inline def digit[$: P]                 = P(CharIn("0-9"))
+  inline def digits[$: P]                = P(digit.rep(min=1))
+  inline def double[$: P]                = P(digits ~ "." ~ digits)
   private inline def hexDigit[$: P]      = P(CharIn("0-9a-fA-F"))
   private inline def unicodeEscape[$: P] = P("u" ~ hexDigit ~ hexDigit ~ hexDigit ~ hexDigit)
   private inline def escape[$: P]        = P("\\" ~ (CharIn("\"/\\\\bfnrt") | unicodeEscape))
   private inline def strChars[$: P]      = P(CharsWhile(stringChars))
-  protected inline def string[$: P]      = P(separator ~ "\"" ~/ (strChars | escape).rep.! ~ "\"")
-  protected inline def lowerCases[$: P]  = P(CharIn("a-z"))
-  protected inline def upperCases[$: P]  = P(CharIn("A-Z"))
-
-  protected def reader[$: P]: P[ReturnType]
-  private[services] final def test[$: P]: P[ReturnType] =
-    Start ~ reader ~ End
+  inline def string[$: P]                = P("\"" ~/ (strChars | escape).rep.! ~ "\"")
+  inline def lowerCases[$: P]            = P(CharIn("a-z"))
+  inline def upperCases[$: P]            = P(CharIn("A-Z"))
 
 end BasicReader
