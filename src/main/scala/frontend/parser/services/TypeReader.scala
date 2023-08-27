@@ -6,7 +6,7 @@ import NoWhitespace.*
 import frontend.parser.domain.*
 
 trait TypeReader extends BasicReader[TypeDef]:
-  private def basicType[$: P]: P[TypeDef.SimpleTypeDef] = IdentifierReader.identifierText
+  def basicType[$: P]: P[TypeDef.SimpleTypeDef] = IdentifierReader.reader
     .rep(1, sep = ".")
     .map(seq => seq.mkString("."))
     .map(TypeDef.SimpleTypeDef.apply)
@@ -15,7 +15,7 @@ trait TypeReader extends BasicReader[TypeDef]:
 
   private def hktType[$: P]: P[TypeDef.HKTTypeDef] =
     P(
-      IdentifierReader.identifierText
+      IdentifierReader.reader
         .rep(1, sep = ".")
         .map(seq => seq.mkString(".")) ~ "[" ~ (reader | inferredByContext)
         .rep(1, sep = ",") ~ "]"

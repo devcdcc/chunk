@@ -44,7 +44,7 @@ object Literal:
 case class Identifier(value: String) extends LangToken
 
 // Type def used for type descriptions
-sealed trait TypeDef extends LangToken
+sealed trait TypeDef                              extends LangToken
 object TypeDef:
   case object InferredHole                                   extends TypeDef
   case class SimpleTypeDef(name: String)                     extends TypeDef
@@ -57,13 +57,17 @@ case class InvocationName(name: List[Identifier]) extends LangToken
 // invocation used for variables usage
 trait Invocation extends LangToken
 object Invocation:
-  case class InvocationValue(name: InvocationName) extends Invocation
-  case class ParamLessInvocation(name: InvocationName, genericMembers: List[TypeDef])                        extends Invocation
-  case class ParamsInvocation(name: InvocationName, genericMembers: List[TypeDef], params: List[ValueToken]) extends Invocation
+  case class InvocationLiteral(literal: Literal)        extends Invocation
+  case class InvocationIdentifier(name: InvocationName) extends Invocation
+  case class InvocationFunction(
+    name: InvocationName,
+    genericMembers: List[TypeDef] = Nil,
+    params: List[ValueToken] = Nil
+  ) extends Invocation
 end Invocation
 
 // used for literals or variables usage
-type ValueToken = Invocation | Literal
+type ValueToken = Invocation // | Literal
 
 // used for defining variables or class members
 trait Member extends LangToken
@@ -71,18 +75,16 @@ object Member:
   case class ValueDeclaration(name: Identifier, typeDef: TypeDef, defaultValue: Optional[ValueToken]) extends Member
   case class VarDeclaration(name: Identifier, typeDef: TypeDef, defaultValue: Optional[ValueToken])   extends Member
   case class MethodDeclaration(
-                                name: Identifier,
-                                genericParams: List[TypeDef],
-                                params: List[Member],
-                                returnType: TypeDef,
-                                statements: List[Statements]
-                              ) extends Member
+    name: Identifier,
+    genericParams: List[TypeDef],
+    params: List[Member],
+    returnType: TypeDef,
+    statements: List[Statements]
+  ) extends Member
 end Member
 
 // used for any sentence variable declaration or value/variable usage.
 type Statements = Member | Invocation
-
-
 
 //type Assignable = Literal | Identifier
 //
