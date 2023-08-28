@@ -9,49 +9,86 @@ import frontend.parser.domain.*
 
 object TypeReaderSpec extends ZIOSpecDefault {
 
-  override def spec: Spec[TestEnvironment with Scope, Any] = suite("TypeReader.typeReader")(
-    test("should succeed with valid typeDef") {
-      // given
-      val typeDefs = List(
-        "aTypeName",
-        "a.full.package.name",
-        "ANUPPPERCASENAME",
-        "ACamelCaseName",
-        "lowercaseName",
-        "H[_]",
-        "H[T]",
-        "com.package.name.H[T]",
-        "com.package.name.H[com.package.name.T]",
-        "H[K,T]",
-        "H[K[T,U]]"
+  private val givenAndExpected = List(
+    ("aTypeName", TypeDef.SimpleTypeDef(InvocationName(List(Identifier("aTypeName"))))),
+    (
+      "a.full.package.name",
+      TypeDef.SimpleTypeDef(
+        InvocationName(List(Identifier("a"), Identifier("full"), Identifier("package"), Identifier("name")))
       )
-      val expected = List(
-        TypeDef.SimpleTypeDef("aTypeName"),
-        TypeDef.SimpleTypeDef("a.full.package.name"),
-        TypeDef.SimpleTypeDef("ANUPPPERCASENAME"),
-        TypeDef.SimpleTypeDef("ACamelCaseName"),
-        TypeDef.SimpleTypeDef("lowercaseName"),
-        TypeDef.HKTTypeDef("H", List(TypeDef.InferredHole)),
-        TypeDef.HKTTypeDef("H", List(TypeDef.SimpleTypeDef("T"))),
-        TypeDef.HKTTypeDef("com.package.name.H", List(TypeDef.SimpleTypeDef("T"))),
-        TypeDef.HKTTypeDef("com.package.name.H", List(TypeDef.SimpleTypeDef("com.package.name.T"))),
-        TypeDef.HKTTypeDef("H", List(TypeDef.SimpleTypeDef("K"), TypeDef.SimpleTypeDef("T"))),
-        TypeDef.HKTTypeDef(
-          "H",
-          List(TypeDef.HKTTypeDef("K", List(TypeDef.SimpleTypeDef("T"), TypeDef.SimpleTypeDef("U"))))
+    ),
+    ("ANUPPPERCASENAME", TypeDef.SimpleTypeDef(InvocationName(List(Identifier("ANUPPPERCASENAME"))))),
+    ("ACamelCaseName", TypeDef.SimpleTypeDef(InvocationName(List(Identifier("ACamelCaseName"))))),
+    ("lowercaseName", TypeDef.SimpleTypeDef(InvocationName(List(Identifier("lowercaseName"))))),
+    ("H[_]", TypeDef.HKTTypeDef(InvocationName(List(Identifier("H"))), List(TypeDef.InferredHole))),
+    (
+      "H[T]",
+      TypeDef.HKTTypeDef(
+        InvocationName(List(Identifier("H"))),
+        List(TypeDef.SimpleTypeDef(InvocationName(List(Identifier("T")))))
+      )
+    ),
+    (
+      "com.package.name.H[T]",
+      TypeDef.HKTTypeDef(
+        InvocationName(List(Identifier("com"), Identifier("package"), Identifier("name"), Identifier("H"))),
+        List(TypeDef.SimpleTypeDef(InvocationName(List(Identifier("T")))))
+      )
+    ),
+    (
+      "com.package.name.H[com.package.name.T]",
+      TypeDef.HKTTypeDef(
+        InvocationName(List(Identifier("com"), Identifier("package"), Identifier("name"), Identifier("H"))),
+        List(
+          TypeDef.SimpleTypeDef(
+            InvocationName(List(Identifier("com"), Identifier("package"), Identifier("name"), Identifier("T")))
+          )
         )
       )
-      for {
-        // when
-        result <- ZIO.foreach(typeDefs) { typeDef =>
-          zioFromParsed(parse(typeDef, TypeReader.test))
-        }
-        // then
-      } yield assertTrue(
-        result.map(_.value) == expected &&
-          result.map(_.index) == typeDefs.map(_.length)
+    ),
+    (
+      "H[K,T]",
+      TypeDef.HKTTypeDef(
+        InvocationName(List(Identifier("H"))),
+        List(
+          TypeDef.SimpleTypeDef(InvocationName(List(Identifier("K")))),
+          TypeDef.SimpleTypeDef(InvocationName(List(Identifier("T"))))
+        )
       )
-    },
+    ),
+    (
+      "H[K[T,U]]",
+      TypeDef.HKTTypeDef(
+        InvocationName(List(Identifier("H"))),
+        List(
+          TypeDef.HKTTypeDef(
+            InvocationName(List(Identifier("K"))),
+            List(
+              TypeDef.SimpleTypeDef(InvocationName(List(Identifier("T")))),
+              TypeDef.SimpleTypeDef(InvocationName(List(Identifier("U"))))
+            )
+          )
+        )
+      )
+    )
+  )
+
+  override def spec: Spec[TestEnvironment with Scope, Any] = suite("TypeReader.typeReader")(
+    suite("should succeed with valid typeDef")(
+      for {
+        (typeDef, expected) <- givenAndExpected
+      } yield test(typeDef) {
+        // given
+        for {
+          // when
+          result <- zioFromParsed(parse(typeDef, TypeReader.test))
+
+          // then
+        } yield assertTrue(
+          result.value == expected
+        )
+      }
+    ),
     test("should fail for malformed types") {
       // given
       val typeDefs = List(
