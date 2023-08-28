@@ -33,12 +33,17 @@ object ValueTokenReaderSpec extends ZIOSpecDefault {
       Invocation.InvocationFunction(
         InvocationName(List(Identifier("abc"))),
         genericMembers = List(
-          TypeDef.SimpleTypeDef("A"),
-          TypeDef.HKTTypeDef("F", members = List(TypeDef.SimpleTypeDef("B"))),
+          TypeDef.SimpleTypeDef(InvocationName(List(Identifier("A")))),
+          TypeDef.HKTTypeDef(InvocationName(List(Identifier("F"))), members = List(TypeDef.SimpleTypeDef(InvocationName(List(Identifier("B")))))),
           TypeDef.HKTTypeDef(
-            "G",
-            members =
-              List(TypeDef.SimpleTypeDef("C"), TypeDef.HKTTypeDef("D", members = List(TypeDef.SimpleTypeDef("E"))))
+            InvocationName(List(Identifier("G"))),
+            members = List(
+              TypeDef.SimpleTypeDef(InvocationName(List(Identifier("C")))),
+              TypeDef.HKTTypeDef(
+                InvocationName(List(Identifier("D"))),
+                members = List(TypeDef.SimpleTypeDef(InvocationName(List(Identifier("E")))))
+              )
+            )
           )
         ),
         params = List(

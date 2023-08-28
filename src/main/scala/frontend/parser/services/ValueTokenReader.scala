@@ -20,8 +20,8 @@ trait ValueTokenReader extends BasicReader[ValueToken]:
       InvocationNameReader.reader ~ "[" ~ hktGenericParam
         .rep(1, sep = ",") ~ "]"
     )
-      .map((name, attrs) => TypeDef.HKTTypeDef(name.name.map(_.value).mkString("."), attrs))
-      | TypeReader.basicType.filter(_.name != "_").opaque("Invalid generic type")
+      .map((name, attrs) => TypeDef.HKTTypeDef(name, attrs))
+      | TypeReader.basicType.filter(_.name.name != List(Identifier("_")))
 
   private def genericParams[$: P]: P[Option[Seq[TypeDef]]] = P(
     "[" ~ hktGenericParam.rep(min = 1, sep = ",") ~ "]"

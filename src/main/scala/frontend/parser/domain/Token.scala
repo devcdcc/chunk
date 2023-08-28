@@ -47,8 +47,8 @@ case class Identifier(value: String) extends LangToken
 sealed trait TypeDef                              extends LangToken
 object TypeDef:
   case object InferredHole                                   extends TypeDef
-  case class SimpleTypeDef(name: String)                     extends TypeDef
-  case class HKTTypeDef(name: String, members: Seq[TypeDef]) extends TypeDef
+  case class SimpleTypeDef(name: InvocationName)                     extends TypeDef
+  case class HKTTypeDef(name: InvocationName, members: Seq[TypeDef]) extends TypeDef
 end TypeDef
 
 // InvocationName used for identifier/variables usage
