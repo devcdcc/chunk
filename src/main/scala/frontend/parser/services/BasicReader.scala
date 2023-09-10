@@ -40,7 +40,8 @@ end BasicReader
 object BasicReader:
 
   private def stringChars(c: Char)       = c != '\"' && c != '\\'
-  private inline def separator[$: P]     = P(CharsWhileIn(" \r\n", 0))
+  inline def separator[$: P]: P[Unit] = P(CharsWhileIn(" \r\n", 1))
+  inline def separatorOpt[$: P]: P[Unit] = separator.?
   inline def digit[$: P]                 = P(CharIn("0-9"))
   inline def digits[$: P]                = P(digit.rep(min=1))
   inline def double[$: P]                = P(digits ~ "." ~ digits)

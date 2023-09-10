@@ -10,38 +10,38 @@ import frontend.parser.domain.*
 object TypeReaderSpec extends ZIOSpecDefault {
 
   private val givenAndExpected = List(
-    ("aTypeName", TypeDef.SimpleTypeDef(InvocationName(List(Identifier("aTypeName"))))),
+    ("aTypeName", TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("aTypeName"))))),
     (
       "a.full.package.name",
       TypeDef.SimpleTypeDef(
-        InvocationName(List(Identifier("a"), Identifier("full"), Identifier("package"), Identifier("name")))
+        IdentifierName(List(Identifier("a"), Identifier("full"), Identifier("package"), Identifier("name")))
       )
     ),
-    ("ANUPPPERCASENAME", TypeDef.SimpleTypeDef(InvocationName(List(Identifier("ANUPPPERCASENAME"))))),
-    ("ACamelCaseName", TypeDef.SimpleTypeDef(InvocationName(List(Identifier("ACamelCaseName"))))),
-    ("lowercaseName", TypeDef.SimpleTypeDef(InvocationName(List(Identifier("lowercaseName"))))),
-    ("H[_]", TypeDef.HKTTypeDef(InvocationName(List(Identifier("H"))), List(TypeDef.InferredHole))),
+    ("ANUPPPERCASENAME", TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("ANUPPPERCASENAME"))))),
+    ("ACamelCaseName", TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("ACamelCaseName"))))),
+    ("lowercaseName", TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("lowercaseName"))))),
+    ("H[_]", TypeDef.HKTTypeDef(IdentifierName(List(Identifier("H"))), List(TypeDef.InferredHole))),
     (
       "H[T]",
       TypeDef.HKTTypeDef(
-        InvocationName(List(Identifier("H"))),
-        List(TypeDef.SimpleTypeDef(InvocationName(List(Identifier("T")))))
+        IdentifierName(List(Identifier("H"))),
+        List(TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("T")))))
       )
     ),
     (
       "com.package.name.H[T]",
       TypeDef.HKTTypeDef(
-        InvocationName(List(Identifier("com"), Identifier("package"), Identifier("name"), Identifier("H"))),
-        List(TypeDef.SimpleTypeDef(InvocationName(List(Identifier("T")))))
+        IdentifierName(List(Identifier("com"), Identifier("package"), Identifier("name"), Identifier("H"))),
+        List(TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("T")))))
       )
     ),
     (
       "com.package.name.H[com.package.name.T]",
       TypeDef.HKTTypeDef(
-        InvocationName(List(Identifier("com"), Identifier("package"), Identifier("name"), Identifier("H"))),
+        IdentifierName(List(Identifier("com"), Identifier("package"), Identifier("name"), Identifier("H"))),
         List(
           TypeDef.SimpleTypeDef(
-            InvocationName(List(Identifier("com"), Identifier("package"), Identifier("name"), Identifier("T")))
+            IdentifierName(List(Identifier("com"), Identifier("package"), Identifier("name"), Identifier("T")))
           )
         )
       )
@@ -49,23 +49,23 @@ object TypeReaderSpec extends ZIOSpecDefault {
     (
       "H[K,T]",
       TypeDef.HKTTypeDef(
-        InvocationName(List(Identifier("H"))),
+        IdentifierName(List(Identifier("H"))),
         List(
-          TypeDef.SimpleTypeDef(InvocationName(List(Identifier("K")))),
-          TypeDef.SimpleTypeDef(InvocationName(List(Identifier("T"))))
+          TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("K")))),
+          TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("T"))))
         )
       )
     ),
     (
       "H[K[T,U]]",
       TypeDef.HKTTypeDef(
-        InvocationName(List(Identifier("H"))),
+        IdentifierName(List(Identifier("H"))),
         List(
           TypeDef.HKTTypeDef(
-            InvocationName(List(Identifier("K"))),
+            IdentifierName(List(Identifier("K"))),
             List(
-              TypeDef.SimpleTypeDef(InvocationName(List(Identifier("T")))),
-              TypeDef.SimpleTypeDef(InvocationName(List(Identifier("U"))))
+              TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("T")))),
+              TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("U"))))
             )
           )
         )

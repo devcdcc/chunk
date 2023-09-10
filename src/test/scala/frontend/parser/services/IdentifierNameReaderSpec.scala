@@ -8,9 +8,9 @@ import zio.*
 import zio.test.*
 import zio.test.Assertion.*
 
-object InvocationNameReaderSpec extends ZIOSpecDefault {
+object IdentifierNameReaderSpec extends ZIOSpecDefault {
 
-  private val subject = new InvocationNameReader {}
+  private val subject = new IdentifierNameReader {}
 
   override def spec = suite("IdentifierReader.identifier")(
     test("should succeed with valid identifiers") {
@@ -30,16 +30,16 @@ object InvocationNameReaderSpec extends ZIOSpecDefault {
         )
       val expected =
         List(
-          InvocationName(List(Identifier("a"))),
-          InvocationName(List(Identifier("b"), Identifier("c"))),
-          InvocationName(List(Identifier("a"), Identifier("b"), Identifier("c"))),
-          InvocationName(List(Identifier("$abc"))),
-          InvocationName(List(Identifier("_01"))),
-          InvocationName(List(Identifier("_00"))),
-          InvocationName(List(Identifier("_abc01"))),
-          InvocationName(List(Identifier("__"))),
-          InvocationName(List(Identifier("aaa_01"))),
-          InvocationName(List(Identifier("personName")))
+          IdentifierName(List(Identifier("a"))),
+          IdentifierName(List(Identifier("b"), Identifier("c"))),
+          IdentifierName(List(Identifier("a"), Identifier("b"), Identifier("c"))),
+          IdentifierName(List(Identifier("$abc"))),
+          IdentifierName(List(Identifier("_01"))),
+          IdentifierName(List(Identifier("_00"))),
+          IdentifierName(List(Identifier("_abc01"))),
+          IdentifierName(List(Identifier("__"))),
+          IdentifierName(List(Identifier("aaa_01"))),
+          IdentifierName(List(Identifier("personName")))
         )
       for {
         // when

@@ -6,14 +6,14 @@ import NoWhitespace.*
 import frontend.parser.domain.*
 
 trait TypeReader extends BasicReader[TypeDef]:
-  def basicType[$: P]: P[TypeDef.SimpleTypeDef] = InvocationNameReader.reader
+  def basicType[$: P]: P[TypeDef.SimpleTypeDef] = IdentifierNameReader.reader
     .map(TypeDef.SimpleTypeDef.apply)
 
   private def inferredByContext[$: P]: P[TypeDef] = "_".!.map(_ => TypeDef.InferredHole)
 
   private def hktType[$: P]: P[TypeDef.HKTTypeDef] =
     P(
-      InvocationNameReader.reader ~ "[" ~ (reader | inferredByContext)
+      IdentifierNameReader.reader ~ "[" ~ (reader | inferredByContext)
         .rep(1, sep = ",") ~ "]"
     )
       .map((name, attrs) => TypeDef.HKTTypeDef(name, attrs))
