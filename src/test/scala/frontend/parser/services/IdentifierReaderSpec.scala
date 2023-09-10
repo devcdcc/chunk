@@ -69,6 +69,33 @@ object IdentifierReaderSpec extends ZIOSpecDefault {
         }
         // then
       } yield assertTrue(responses.forall(_.isLeft))
+    },
+    test("should fail with keywords") {
+      // given
+      val identifiers =
+        List(
+          "True",
+          "False",
+          "val",
+          "var",
+          "def",
+          "fn",
+          "trait",
+          "class",
+          "while",
+          "do",
+          "until",
+          "private",
+          "protected",
+          "extends"
+        )
+      for {
+        // when
+        responses <- ZIO.foreach(identifiers) { identifier =>
+          zioFromParsed(parse(identifier, subject.test)).either
+        }
+        // then
+      } yield assertTrue(responses.forall(_.isLeft))
     }
   )
 }

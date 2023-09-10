@@ -32,7 +32,22 @@ import NoWhitespace.*
 import frontend.parser.domain.Identifier
 
 trait IdentifierReader extends BasicReader[Identifier]:
-
+  private val keywords = List(
+    "True",
+    "False",
+    "val",
+    "var",
+    "def",
+    "fn",
+    "trait",
+    "class",
+    "while",
+    "do",
+    "until",
+    "private",
+    "protected",
+    "extends"
+  )
   import BasicReader.*
 
   private inline def specialCharacterIdentifier[$: P] = P(CharIn("_$"))
@@ -41,7 +56,7 @@ trait IdentifierReader extends BasicReader[Identifier]:
   private def identifierText[$: P]                    = P(basicCharIdentifier ~ basicMixedIdentifier.rep).!
 
   override def reader[$: P]: P[Identifier] =
-    identifierText.filter(a => a != "True" && a != "False").map(Identifier.apply)
+    identifierText.filter(a => !keywords.contains(a)).map(Identifier.apply)
 end IdentifierReader
 
 object IdentifierReader extends IdentifierReader:
