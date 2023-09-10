@@ -12,67 +12,67 @@ object ValueTokenReaderSpec extends ZIOSpecDefault {
 
   private val subject          = new ValueTokenReader {}
   private val givenAndExpected = List(
-    ("a", Invocation.InvocationIdentifier(InvocationName(List(Identifier("a"))))),
-    ("b.c", Invocation.InvocationIdentifier(InvocationName(List(Identifier("b"), Identifier("c"))))),
-    ("a.b.c", Invocation.InvocationIdentifier(InvocationName(List(Identifier("a"), Identifier("b"), Identifier("c"))))),
+    ("a", ValueToken.ValueTokenIdentifier(IdentifierName(List(Identifier("a"))))),
+    ("b.c", ValueToken.ValueTokenIdentifier(IdentifierName(List(Identifier("b"), Identifier("c"))))),
+    ("a.b.c", ValueToken.ValueTokenIdentifier(IdentifierName(List(Identifier("a"), Identifier("b"), Identifier("c"))))),
     (
       "personName(ssd(s),22)",
-      Invocation.InvocationFunction(
-        InvocationName(List(Identifier("personName"))),
+      ValueToken.ValueTokenFunction(
+        IdentifierName(List(Identifier("personName"))),
         params = List(
-          Invocation.InvocationFunction(
-            InvocationName(List(Identifier("ssd"))),
-            params = List(Invocation.InvocationIdentifier(InvocationName(List(Identifier("s")))))
+          ValueToken.ValueTokenFunction(
+            IdentifierName(List(Identifier("ssd"))),
+            params = List(ValueToken.ValueTokenIdentifier(IdentifierName(List(Identifier("s")))))
           ),
-          Invocation.InvocationLiteral(Literal.IntLiteral(22))
+          ValueToken.ValueTokenLiteral(Literal.IntLiteral(22))
         )
       )
     ),
     (
       "abc[A, F[B], G[C,D[E]]](23)",
-      Invocation.InvocationFunction(
-        InvocationName(List(Identifier("abc"))),
+      ValueToken.ValueTokenFunction(
+        IdentifierName(List(Identifier("abc"))),
         genericMembers = List(
-          TypeDef.SimpleTypeDef(InvocationName(List(Identifier("A")))),
-          TypeDef.HKTTypeDef(InvocationName(List(Identifier("F"))), members = List(TypeDef.SimpleTypeDef(InvocationName(List(Identifier("B")))))),
+          TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("A")))),
+          TypeDef.HKTTypeDef(IdentifierName(List(Identifier("F"))), members = List(TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("B")))))),
           TypeDef.HKTTypeDef(
-            InvocationName(List(Identifier("G"))),
+            IdentifierName(List(Identifier("G"))),
             members = List(
-              TypeDef.SimpleTypeDef(InvocationName(List(Identifier("C")))),
+              TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("C")))),
               TypeDef.HKTTypeDef(
-                InvocationName(List(Identifier("D"))),
-                members = List(TypeDef.SimpleTypeDef(InvocationName(List(Identifier("E")))))
+                IdentifierName(List(Identifier("D"))),
+                members = List(TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("E")))))
               )
             )
           )
         ),
         params = List(
-          Invocation.InvocationLiteral(Literal.IntLiteral(23))
+          ValueToken.ValueTokenLiteral(Literal.IntLiteral(23))
         )
       )
     ),
     (
       "_01(22)",
-      Invocation.InvocationFunction(
-        InvocationName(List(Identifier("_01"))),
-        params = List(Invocation.InvocationLiteral(Literal.IntLiteral(22)))
+      ValueToken.ValueTokenFunction(
+        IdentifierName(List(Identifier("_01"))),
+        params = List(ValueToken.ValueTokenLiteral(Literal.IntLiteral(22)))
       )
     ),
     (
       "_a.b.c01(233,asdf)",
-      Invocation.InvocationFunction(
-        InvocationName(List(Identifier("_a"), Identifier("b"), Identifier("c01"))),
+      ValueToken.ValueTokenFunction(
+        IdentifierName(List(Identifier("_a"), Identifier("b"), Identifier("c01"))),
         params = List(
-          Invocation.InvocationLiteral(Literal.IntLiteral(233)),
-          Invocation.InvocationIdentifier(InvocationName(List(Identifier("asdf"))))
+          ValueToken.ValueTokenLiteral(Literal.IntLiteral(233)),
+          ValueToken.ValueTokenIdentifier(IdentifierName(List(Identifier("asdf"))))
         )
       )
     ),
-    ("__", Invocation.InvocationIdentifier(InvocationName(List(Identifier("__"))))),
-    ("aaa_01", Invocation.InvocationIdentifier(InvocationName(List(Identifier("aaa_01"))))),
-    ("True", Invocation.InvocationLiteral(Literal.BooleanLiteral(true))),
-    ("22", Invocation.InvocationLiteral(Literal.IntLiteral(22))),
-    (""""hola"""", Invocation.InvocationLiteral(Literal.StringLiteral("hola")))
+    ("__", ValueToken.ValueTokenIdentifier(IdentifierName(List(Identifier("__"))))),
+    ("aaa_01", ValueToken.ValueTokenIdentifier(IdentifierName(List(Identifier("aaa_01"))))),
+    ("True", ValueToken.ValueTokenLiteral(Literal.BooleanLiteral(true))),
+    ("22", ValueToken.ValueTokenLiteral(Literal.IntLiteral(22))),
+    (""""hola"""", ValueToken.ValueTokenLiteral(Literal.StringLiteral("hola")))
   )
 
   private val invalidIdentifiers = List(

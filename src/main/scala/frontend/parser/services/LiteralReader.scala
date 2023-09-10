@@ -27,7 +27,7 @@ package chunk
 package frontend.parser.services
 
 import fastparse.*
-import ScalaWhitespace.*
+import NoWhitespace.*
 import frontend.parser.domain.*
 
 trait LiteralReader extends BasicReader[Literal]:

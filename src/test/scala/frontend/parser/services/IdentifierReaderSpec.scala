@@ -55,6 +55,7 @@ object IdentifierReaderSpec extends ZIOSpecDefault {
       val identifiers =
         List(
           "0",
+          "var a",
           "000asdfa",
           "%%",
           "23",

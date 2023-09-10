@@ -29,7 +29,7 @@ package frontend.parser.domain
 
 import zio.prelude.data.*
 
-val LANG_DEFAULT_PACKAGE = "foop"
+val LANG_DEFAULT_PACKAGE = "chunk"
 
 sealed trait LangToken
 
@@ -46,47 +46,59 @@ case class Identifier(value: String) extends LangToken
 // Type def used for type descriptions
 sealed trait TypeDef                              extends LangToken
 object TypeDef:
-  case object InferredHole                                   extends TypeDef
-  case class SimpleTypeDef(name: InvocationName)                     extends TypeDef
-  case class HKTTypeDef(name: InvocationName, members: Seq[TypeDef]) extends TypeDef
+  case object InferredHole                                           extends TypeDef
+  case class SimpleTypeDef(name: IdentifierName)                     extends TypeDef
+  case class HKTTypeDef(name: IdentifierName, members: Seq[TypeDef]) extends TypeDef
 end TypeDef
 
 // InvocationName used for identifier/variables usage
-case class InvocationName(name: List[Identifier]) extends LangToken
+case class IdentifierName(name: List[Identifier]) extends LangToken
+
+//statement
+// used for any sentence variable declaration or value/variable usage.
+//type Statement = Declaration | Invocation | Evaluable // should add class/trait/object declarations
+sealed trait Statement extends LangToken
 
 // invocation used for variables usage
-trait Invocation extends LangToken
-object Invocation:
-  case class InvocationLiteral(literal: Literal)        extends Invocation
-  case class InvocationIdentifier(name: InvocationName) extends Invocation
-  case class InvocationFunction(
-    name: InvocationName,
-    genericMembers: List[TypeDef] = Nil,
-    params: List[ValueToken] = Nil
-  ) extends Invocation
-end Invocation
+trait ValueToken extends Statement
+object ValueToken:
+  case class ValueTokenLiteral(literal: Literal)        extends ValueToken
+  case class ValueTokenIdentifier(name: IdentifierName) extends ValueToken
+  case class ValueTokenFunction(
+    name: IdentifierName,
+    genericMembers: Seq[TypeDef] = Nil,
+    params: Seq[ValueToken] = Nil
+  ) extends ValueToken
+
+  sealed trait ValueTokenBlock extends ValueToken
+  object ValueTokenBlock:
+    case class SimpleBlock(statements: Seq[Statement]) extends ValueTokenBlock
+    case class FunctionBlock(params: Seq[Assignation], returnType: Optional[TypeDef], statements: Seq[Statement])
+        extends ValueTokenBlock
+  end ValueTokenBlock
+
+end ValueToken
 
 // used for literals or variables usage
-type ValueToken = Invocation // | Literal
+//type ValueToken = Invocation // | Literal
 
 // used for defining variables or class members
-trait Member extends LangToken
-object Member:
-  case class ValueDeclaration(name: Identifier, typeDef: TypeDef, defaultValue: Optional[ValueToken]) extends Member
-  case class VarDeclaration(name: Identifier, typeDef: TypeDef, defaultValue: Optional[ValueToken])   extends Member
-  case class MethodDeclaration(
+sealed trait Assignation extends Statement
+object Assignation:
+  case class ValueAssignation(name: Identifier, typeDef: Optional[TypeDef], defaultValue: ValueToken)
+      extends Assignation
+  case class VarAssignation(name: Identifier, typeDef: Optional[TypeDef], defaultValue: Optional[ValueToken])
+      extends Assignation
+  case class MethodAssignation(
     name: Identifier,
-    genericParams: List[TypeDef],
-    params: List[Member],
+    genericParams: Seq[TypeDef],
+    params: Seq[Assignation],
     returnType: TypeDef,
-    statements: List[Statements]
-  ) extends Member
-end Member
+    body: ValueToken
+  ) extends Assignation
+end Assignation
 
-// used for any sentence variable declaration or value/variable usage.
-type Statements = Member | Invocation
-
-//type Assignable = Literal | Identifier
+//type Assignabkle = Literal | Identifier
 //
 //sealed trait AbstractValueDeclaration(
 //  name: Identifier,
