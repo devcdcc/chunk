@@ -9,34 +9,30 @@ import BasicReader.{separator, *}
 import BasicReader.*
 import zio.prelude.data.Optional
 
-trait AssignationReader extends BasicReader[Assignation]:
+trait DeclarationReader extends BasicReader[Declaration]:
   import BasicReader.*
 
-  def valueMemberReader[$: P] = P(
+  private def valueDeclarationReader[$: P] = P(
     P(
       "val" ~ separator
     ).? ~ IdentifierReader.reader ~ separatorOpt ~ (":" ~ separatorOpt ~ TypeReader.reader).? ~ separatorOpt ~ "=" ~
       separatorOpt ~ ValueTokenReader.reader
   ).map { (identifier, typeValue, token) =>
-    Assignation.ValueAssignation(identifier, Optional.OptionIsNullable(typeValue), token)
+    Declaration.ValueDeclaration(identifier, Optional.OptionIsNullable(typeValue), token)
   }
 
-  def variableMemberReader[$: P] = P(
+  private def variableDeclarationReader[$: P] = P(
     P("var" ~ separator)
       ~ IdentifierReader.reader ~ separatorOpt ~ (":" ~ separatorOpt ~ TypeReader.reader).? ~ separatorOpt ~ "=" ~
       separatorOpt ~ ValueTokenReader.reader.?
   ).map { (identifier, typeValue, token) =>
     println(identifier)
-    Assignation.VarAssignation(identifier, Optional.OptionIsNullable(typeValue), Optional.OptionIsNullable(token))
+    Declaration.VarDeclaration(identifier, Optional.OptionIsNullable(typeValue), Optional.OptionIsNullable(token))
   }
 
-//    .map{
-//    (identifier: Identifier, typeValue: TypeDef, token: ValueToken) => ???
-//  }
+  override def reader[$: P]: P[Declaration] = variableDeclarationReader | valueDeclarationReader
 
-  override def reader[$: P]: P[Assignation] = variableMemberReader | valueMemberReader
+end DeclarationReader
 
-end AssignationReader
-
-object AssignationReader extends AssignationReader:
-end AssignationReader
+object DeclarationReader extends DeclarationReader:
+end DeclarationReader
