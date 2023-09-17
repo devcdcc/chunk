@@ -72,9 +72,22 @@ object ValueToken:
 
   sealed trait ValueTokenBlock extends ValueToken
   object ValueTokenBlock:
+
+    sealed trait ParamDeclaration
+    case class ParamValueDeclaration(name: Identifier, typeDef: Optional[TypeDef], defaultValue: Optional[ValueToken])
+        extends ParamDeclaration
+    case class ParamVariableDeclaration(
+      name: Identifier,
+      typeDef: Optional[TypeDef],
+      defaultValue: Optional[ValueToken]
+    ) extends ParamDeclaration
+
     case class SimpleBlock(statements: Seq[Statement]) extends ValueTokenBlock
-    case class FunctionBlock(params: Seq[Assignation], returnType: Optional[TypeDef], statements: Seq[Statement])
-        extends ValueTokenBlock
+    case class FunctionBlock(
+      params: Seq[ParamValueDeclaration],
+      returnType: Optional[TypeDef],
+      statements: Seq[Statement]
+    ) extends ValueTokenBlock
   end ValueTokenBlock
 
 end ValueToken
@@ -83,20 +96,20 @@ end ValueToken
 //type ValueToken = Invocation // | Literal
 
 // used for defining variables or class members
-sealed trait Assignation extends Statement
-object Assignation:
-  case class ValueAssignation(name: Identifier, typeDef: Optional[TypeDef], defaultValue: ValueToken)
-      extends Assignation
-  case class VarAssignation(name: Identifier, typeDef: Optional[TypeDef], defaultValue: Optional[ValueToken])
-      extends Assignation
-  case class MethodAssignation(
+sealed trait Declaration extends Statement
+object Declaration:
+  case class ValueDeclaration(name: Identifier, typeDef: Optional[TypeDef], defaultValue: ValueToken)
+      extends Declaration
+  case class VarDeclaration(name: Identifier, typeDef: Optional[TypeDef], defaultValue: Optional[ValueToken])
+      extends Declaration
+  case class MethodDeclaration(
     name: Identifier,
     genericParams: Seq[TypeDef],
-    params: Seq[Assignation],
+    params: Seq[Declaration],
     returnType: TypeDef,
     body: ValueToken
-  ) extends Assignation
-end Assignation
+  ) extends Declaration
+end Declaration
 
 //type Assignabkle = Literal | Identifier
 //

@@ -10,13 +10,13 @@ import zio.prelude.data.Optional
 import zio.test.*
 import zio.test.Assertion.*
 
-object AssignationReaderSpec extends ZIOSpecDefault {
+object DeclarationReaderSpec extends ZIOSpecDefault {
   import TestAspect.*
-  private val subject          = new AssignationReader {}
+  private val subject          = new DeclarationReader {}
   private val givenAndExpected = List(
     (
       "a = 22",
-      Assignation.ValueAssignation(
+      Declaration.ValueDeclaration(
         Identifier("a"),
         typeDef = Optional.Absent,
         defaultValue = ValueToken.ValueTokenLiteral(Literal.IntLiteral(value = 22))
@@ -24,7 +24,7 @@ object AssignationReaderSpec extends ZIOSpecDefault {
     ),
     (
       "val a = 22",
-      Assignation.ValueAssignation(
+      Declaration.ValueDeclaration(
         Identifier("a"),
         typeDef = Optional.Absent,
         defaultValue = ValueToken.ValueTokenLiteral(Literal.IntLiteral(value = 22))
@@ -32,7 +32,7 @@ object AssignationReaderSpec extends ZIOSpecDefault {
     ),
     (
       "a: Boolean = True",
-      Assignation.ValueAssignation(
+      Declaration.ValueDeclaration(
         Identifier("a"),
         typeDef = TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("Boolean")))),
         defaultValue = ValueToken.ValueTokenLiteral(Literal.BooleanLiteral(true))
@@ -40,7 +40,7 @@ object AssignationReaderSpec extends ZIOSpecDefault {
     ),
     (
       "val a: Boolean = True",
-      Assignation.ValueAssignation(
+      Declaration.ValueDeclaration(
         Identifier("a"),
         typeDef = TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("Boolean")))),
         defaultValue = ValueToken.ValueTokenLiteral(Literal.BooleanLiteral(true))
@@ -48,7 +48,7 @@ object AssignationReaderSpec extends ZIOSpecDefault {
     ),
     (
       "var a: Boolean = True",
-      Assignation.VarAssignation(
+      Declaration.VarDeclaration(
         Identifier("a"),
         typeDef = TypeDef.SimpleTypeDef(IdentifierName(List(Identifier("Boolean")))),
         defaultValue = ValueToken.ValueTokenLiteral(Literal.BooleanLiteral(true))
