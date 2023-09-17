@@ -33,10 +33,10 @@ import frontend.parser.domain.*
 trait LiteralReader extends BasicReader[Literal]:
 
   import BasicReader.*
-
-  private def booleanLiteral[$: P] = P("True" | "False").!.map(_.toBoolean).map(Literal.BooleanLiteral.apply)
-  private def intLiteral[$: P]     = P("-".? ~ digits).!.map(_.toLong).map(Literal.IntLiteral.apply)
-  private def doubleLiteral[$: P]  = P("-".? ~ double).!.map(_.toDouble).map(Literal.DoubleLiteral.apply)
+  import frontend.parser.scalaparse.Scala
+  private def booleanLiteral[$: P] = Scala.Literals.Bool.!.map(_.toBoolean).map(Literal.BooleanLiteral.apply)
+  private def intLiteral[$: P]     = Scala.Literals.Int.!.map(_.toLong).map(Literal.IntLiteral.apply)
+  private def doubleLiteral[$: P]  = Scala.Literals.Float.!.map(_.toDouble).map(Literal.DoubleLiteral.apply)
   private def stringLiteral[$: P]  = string.map(Literal.StringLiteral.apply)
 
   override def reader[$: P]: P[Literal] = P(
