@@ -72,9 +72,22 @@ object ValueToken:
 
   sealed trait ValueTokenBlock extends ValueToken
   object ValueTokenBlock:
+
+    sealed trait ParamDeclaration
+    case class ParamValueDeclaration(name: Identifier, typeDef: Optional[TypeDef], defaultValue: Optional[ValueToken])
+        extends ParamDeclaration
+    case class ParamVariableDeclaration(
+      name: Identifier,
+      typeDef: Optional[TypeDef],
+      defaultValue: Optional[ValueToken]
+    ) extends ParamDeclaration
+
     case class SimpleBlock(statements: Seq[Statement]) extends ValueTokenBlock
-    case class FunctionBlock(params: Seq[Declaration], returnType: Optional[TypeDef], statements: Seq[Statement])
-        extends ValueTokenBlock
+    case class FunctionBlock(
+      params: Seq[ParamValueDeclaration],
+      returnType: Optional[TypeDef],
+      statements: Seq[Statement]
+    ) extends ValueTokenBlock
   end ValueTokenBlock
 
 end ValueToken
