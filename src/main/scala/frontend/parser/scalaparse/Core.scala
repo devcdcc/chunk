@@ -87,8 +87,8 @@ trait Core extends syntax.Literals {
   def Id[$: P]          = P(WL ~ Identifiers.Id)
   def VarId[$: P]       = P(WL ~ Identifiers.VarId)
   def BacktickId[$: P]  = P(WL ~ Identifiers.BacktickId)
-  def ExprLiteral[$: P] = P(WL ~ Literals.Expr.Literal)
-  def PatLiteral[$: P]  = P(WL ~ Literals.Pat.Literal)
+  def ExprLiteral[$: P] = P(WL ~ Literals.Expr.LiteralR)
+  def PatLiteral[$: P]  = P(WL ~ Literals.Pat.LiteralR)
 
   def QualId[$: P] = P(WL ~ Id.rep(1, sep = "."))
   def Ids[$: P]    = P(Id.rep(1, sep = ","))

@@ -1,10 +1,10 @@
 package chunk
 package frontend.parser.scalaparse.syntax
 
-import fastparse._
-
-import NoWhitespace._
-import Identifiers._
+import fastparse.*
+import NoWhitespace.*
+import Identifiers.*
+import chunk.frontend.parser.domain.Literal
 
 trait Literals { l =>
   def Block[$: P]: P[Unit]
@@ -39,12 +39,12 @@ trait Literals { l =>
     def Float[$: P] = {
       def LeadingDotFloat = P("." ~ DecNum ~ Exp.? ~ FloatType.?)
       def FloatSuffix     = P(LeadingDotFloat | Exp ~ FloatType.? | Exp.? ~ FloatType)
-      P( "-".? ~ ((DecNum ~ FloatSuffix) | LeadingDotFloat))
+      P("-".? ~ ((DecNum ~ FloatSuffix) | LeadingDotFloat)).!.map(_.toDouble).map(Literal.DoubleLiteral.apply)
     }
 
-    def Int[$: P] = P("-".? ~ (HexNum | DecNum) ~ ("L" | "l").?)
+    def Int[$: P] = P("-".? ~ (HexNum | DecNum) ~ ("L" | "l").?).!.map(_.toLong).map(Literal.IntLiteral.apply)
 
-    def Bool[$: P] = P(Key.W("True") | Key.W("False"))
+    def Bool[$: P] = P(Key.W("True") | Key.W("False")).!.map(_.toBoolean).map(Literal.BooleanLiteral.apply)
 
     // Comments cannot have cuts in them, because they appear before every
     // terminal node. That means that a comment before any terminal will
@@ -71,8 +71,8 @@ trait Literals { l =>
     }
 
     class InterpCtx(interp: Option[() => P[Unit]]) {
-      def Literal[$: P] = P((Float | Int) | Bool | String | "'" ~/ (Char | Symbol) | Null)
-      def Interp[$: P]  = interp match {
+      def LiteralR[$: P] = P(DiscardParserValue(Float | Int | Bool | String) | "'" ~/ (Char | Symbol) | Null)
+      def Interp[$: P]   = interp match {
         case None    => P(Fail)
         case Some(p) => P("$" ~ Identifiers.PlainIdNoDollar | ("${" ~ p() ~ WL ~ "}") | "$$")
       }
@@ -103,6 +103,14 @@ trait Literals { l =>
             TQ ~/ NoInterp.TripleChars ~ TripleTail |
             "\"" ~/ NoInterp.SingleChars(false) ~ "\""
         }
+      }.!.map {
+        case value if value.endsWith("\"\"\"") =>
+          Literal.StringLiteral(value.split("\"\"\"").drop(1).mkString("\"\"\""))
+        case value     =>
+          Literal.StringLiteral(value.split("\"").drop(1).mkString("\""))
+        //          case value if value.value.startsWith("\"") && value.value.endsWith("\"")         =>
+        //            Literal.StringLiteral(value.value.replaceFirst("\"", "").reverse.replaceFirst("\"", "").reverse)
+//        case value                             => Literal.StringLiteral(value)
       }
 
     }
