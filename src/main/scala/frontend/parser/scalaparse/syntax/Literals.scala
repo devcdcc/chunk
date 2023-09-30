@@ -96,7 +96,7 @@ trait Literals { l =>
       }
       def String[$: P]                           = {
         P {
-          Id.filter(_ => interp.isDefined) ~ (
+          DiscardParserValue(Id).filter(_ => interp.isDefined) ~ (
             TQ ~/ TripleChars ~ TripleTail |
               "\"" ~/ SingleChars(true) ~ "\""
           ) |

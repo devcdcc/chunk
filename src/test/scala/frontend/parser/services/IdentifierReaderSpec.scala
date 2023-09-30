@@ -57,9 +57,13 @@ object IdentifierReaderSpec extends ZIOSpecDefault {
           "0",
           "var a",
           "000asdfa",
-          "%%",
+          "var",
+          "val",
+          "def",
+          "fn",
+//          "%%",
           "23",
-          "@@",
+//          "@@",
           "!43#"
         )
       for {

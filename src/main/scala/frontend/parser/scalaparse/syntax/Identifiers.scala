@@ -1,11 +1,12 @@
 package chunk
 package frontend.parser.scalaparse.syntax
 
-import fastparse._
-import fastparse._
-import NoWhitespace._
-import Basic._
-import CharPredicates._
+import fastparse.*
+import fastparse.*
+import NoWhitespace.*
+import Basic.*
+import CharPredicates.*
+import chunk.frontend.parser.domain.Identifier
 object Identifiers {
 
   case class NamedFunction(f: Char => Boolean)(implicit name: sourcecode.Name) extends (Char => Boolean) {
@@ -31,7 +32,7 @@ object Identifiers {
   def PlainIdNoDollar[$: P] = P(UppercaseId(false) | VarId0(false) | Operator).opaque("plain-id")
 
   def BacktickId[$: P]  = P("`" ~ CharsWhile(NotBackTick) ~ "`")
-  def Id[$: P]: P[Unit] = P(BacktickId | PlainId).opaque("id")
+  def Id[$: P]: P[Identifier] = P(BacktickId | PlainId).opaque("id").!.map(Identifier.apply)
 
   def IdRest[$: P](allowDollar: Boolean) = {
 
@@ -57,6 +58,7 @@ object Identifiers {
       "finally",
       "final",
       "finally",
+      "fn",
       "forSome",
       "for",
       "if",
@@ -80,6 +82,7 @@ object Identifiers {
       "try",
       "True",
       "type",
+      "until",
       "val",
       "var",
       "while",

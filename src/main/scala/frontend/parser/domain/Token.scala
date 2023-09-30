@@ -100,6 +100,8 @@ sealed trait Declaration extends Statement
 object Declaration:
   case class ValueDeclaration(name: Identifier, typeDef: Optional[TypeDef], defaultValue: ValueToken)
       extends Declaration
+  case class MultipleValuesDeclaration(identifiers: Seq[(Identifier, Optional[TypeDef])], defaultValue: ValueToken)
+      extends Declaration
   case class VarDeclaration(name: Identifier, typeDef: Optional[TypeDef], defaultValue: Optional[ValueToken])
       extends Declaration
   case class MethodDeclaration(

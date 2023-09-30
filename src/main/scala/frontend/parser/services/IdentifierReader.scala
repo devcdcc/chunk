@@ -32,6 +32,7 @@ import NoWhitespace.*
 import frontend.parser.domain.Identifier
 
 trait IdentifierReader extends BasicReader[Identifier]:
+
   private val keywords = List(
     "True",
     "False",
@@ -54,9 +55,9 @@ trait IdentifierReader extends BasicReader[Identifier]:
   private inline def basicCharIdentifier[$: P]        = P(lowerCases | upperCases | specialCharacterIdentifier)
   private inline def basicMixedIdentifier[$: P]       = P(basicCharIdentifier | digit)
   private def identifierText[$: P]                    = P(basicCharIdentifier ~ basicMixedIdentifier.rep).!
-
   override def reader[$: P]: P[Identifier] =
-    identifierText.filter(a => !keywords.contains(a)).map(Identifier.apply)
+    frontend.parser.scalaparse.syntax.Identifiers.Id
+//    identifierText.filter(a => !keywords.contains(a)).map(Identifier.apply)
 end IdentifierReader
 
 object IdentifierReader extends IdentifierReader:

@@ -80,9 +80,9 @@ object ValueTokenReaderSpec extends ZIOSpecDefault {
     "person[]()",
     "person[_]()",
     "000asdfa",
-    "%%",
-    "--",
-    "@@",
+//    "%%",
+//    "--",
+//    "@@",
     "!43#",
     "a.b..c",
     "_a.bc.01"

@@ -51,6 +51,7 @@ trait Core extends syntax.Literals {
   def `super`[$: P]     = W("super")
   def `catch`[$: P]     = W("catch")
   def `finally`[$: P]   = W("finally")
+  def `fn`[$: P] = W("fn")
   def `do`[$: P]        = W("do")
   def `yield`[$: P]     = W("yield")
   def `while`[$: P]     = W("while")
@@ -84,7 +85,7 @@ trait Core extends syntax.Literals {
    * helper printing function
    */
 
-  def Id[$: P]          = P(WL ~ Identifiers.Id)
+  def Id[$: P]          = P(WL ~ DiscardParserValue(Identifiers.Id))
   def VarId[$: P]       = P(WL ~ Identifiers.VarId)
   def BacktickId[$: P]  = P(WL ~ Identifiers.BacktickId)
   def ExprLiteral[$: P] = P(WL ~ Literals.Expr.LiteralR)
@@ -101,6 +102,6 @@ trait Core extends syntax.Literals {
   def ClassQualifier[$: P]        = P("[" ~ Id ~ "]")
   def ThisSuper[$: P]             = P(`this` | `super` ~ ClassQualifier.?)
   def ThisPath[$: P]: P[Unit]     = P(ThisSuper ~ ("." ~ PostDotCheck ~/ Id).rep)
-  def IdPath[$: P]: P[Unit]       = P(Id ~ ("." ~ PostDotCheck ~/ (`this` | Id)).rep ~ ("." ~ ThisPath).?)
+  def IdPath[$: P]     = P(Id.! ~ ("." ~ PostDotCheck ~/ (`this` | Id).!).rep ~ ("." ~ ThisPath).?)
   def StableId[$: P]: P[Unit]     = P(ThisPath | IdPath)
 }

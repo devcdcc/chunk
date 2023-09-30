@@ -15,7 +15,7 @@ trait Types extends Core {
     P((`private` | `protected`) ~ AccessQualifier.?)
   }
   def Dcl[$: P]: P[Unit]       = {
-    P((`val` | `var`) ~/ ValVarDef | `def` ~/ FunDef | `type` ~/ TypeDef)
+    P((`val` | `var`) ~/ ValVarDef | (`def` | `fn`) ~/ FunDef | `type` ~/ TypeDef)
   }
 
   def Mod[$: P]: P[Unit] = P(LocalMod | AccessMod | `override`)

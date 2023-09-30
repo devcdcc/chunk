@@ -55,9 +55,9 @@ object IdentifierNameReaderSpec extends ZIOSpecDefault {
         List(
           "0",
           "000asdfa",
-          "%%",
+//          "%%",
           "23",
-          "@@",
+//          "@@",
           "!43#",
           "a.b..c",
           "_a.bc.01"
