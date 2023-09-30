@@ -5,37 +5,13 @@ import zio.*
 import fastparse.*
 import NoWhitespace.*
 import frontend.parser.domain
-import frontend.parser.services.*
 
 object Main extends ZIOAppDefault {
   override def run =
     for {
-      r <-
-        zioFromParsed(
-          parse(
-            """package chunk
-              |
-              |import zio.stream.*
-              |import zio.*
-              |import fastparse.*
-              |
-              |object Main {
-              |  def main(args: Array[String]): Unit =
-              |    for {
-              |       _ <- a
-              |       b <- c
-              |    } yield ()
-              |    asdf(a => {a * 2})
-              |    if (true) then
-              |    println("2")
-              |    println("Hello World!")
-              |  }
-              |
-              |
-              |""".stripMargin,
-            scalaparse.Scala.CompilationUnit
-          )
-        )
+      r <- ZIO.attemptUnsafe { _ =>
+        "a" // parse("\"hello \\\"world\\\\ \\\" \"", domain.string).toString
+      }
       _ <- Console.printLine(r)
     } yield ()
 //  override def run = {

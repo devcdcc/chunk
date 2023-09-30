@@ -29,13 +29,15 @@ trait ValueTokenReader extends BasicReader[ValueToken]:
 
   private def literal[$: P]    = P(LiteralReader.reader.map(ValueToken.ValueTokenLiteral.apply))
   private def invocation[$: P] = P(IdentifierNameReader.reader.map(name => ValueToken.ValueTokenIdentifier(name)))
-  private def genericInvocation[$: P]      = P(
-    (IdentifierNameReader.reader ~ genericParams ~ "(" ~ reader.rep(sep = ",") ~ ")").map {
-      case (name, hktParams, params) =>
-        ValueToken.ValueTokenFunction(name, hktParams.getOrElse(Nil).toList, params.toList)
-    }
-  )
-  override def reader[$: P]: P[ValueToken] = genericInvocation | literal | invocation
+
+  override def reader[$: P]: P[ValueToken] =
+    P(
+      (IdentifierNameReader.reader ~ genericParams ~ "(" ~ reader.rep(sep = ",") ~ ")").map {
+        case (name, hktParams, params) =>
+          ValueToken.ValueTokenFunction(name, hktParams.getOrElse(Nil).toList, params.toList)
+      }
+    ) | literal | invocation
+
 
 end ValueTokenReader
 
