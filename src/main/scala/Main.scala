@@ -7,8 +7,6 @@ import NoWhitespace.*
 import frontend.parser.domain
 import frontend.parser.services.*
 
-import chunk.frontend.parser.scalaparse.Scala
-
 object Main extends ZIOAppDefault {
   override def run =
     for {
@@ -35,7 +33,7 @@ object Main extends ZIOAppDefault {
               |
               |
               |""".stripMargin,
-            Scala.CompilationUnit
+            scalaparse.Scala.CompilationUnit
           )
         )
       _ <- Console.printLine(r)
